@@ -1,0 +1,697 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>BissaCookies</title>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --ac: #4383e4;
+      --ac-light: #FAEEDA;
+      --ac-mid: #1bbd1b;
+      --ac-dark: #633806;
+      --bg: #ffffff;
+      --bg-2: #f7f4ef;
+      --text: #1a1a1a;
+      --text-2: #666;
+      --border: rgba(0,0,0,0.12);
+      --border-2: rgba(0,0,0,0.22);
+      --radius: 12px;
+      --radius-sm: 8px;
+    }
+
+    body {
+      font-family: 'Segoe UI', system-ui, sans-serif;
+      background: var(--ac);
+      color: var(--text);
+      min-height: 100vh;
+    }
+
+    /* ── NAV ── */
+    nav {
+      background: var(--bg-2);
+      border-bottom: 0.5px solid var(--border);
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+    .nav-inner {
+      max-width: 900px;
+      margin: 0 auto;
+      padding: 0 1.5rem;
+      height: 60px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .logo {
+      font-size: 20px;
+      font-weight: 700;
+      letter-spacing: -0.5px;
+      color: var(--text);
+    }
+    .logo span { color: var(--ac); }
+
+    .cart-btn {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      background: var(--ac);
+      border: 1px solid var(--border-2);
+      border-radius: var(--radius-sm);
+      padding: 8px 16px;
+      cursor: pointer;
+      font-size: 14px;
+      font-weight: 500;
+      color: var(--bg);
+      transition: background 0.15s;
+    }
+    .cart-btn:hover { background: var(--bg-2); }
+
+    .badge {
+      background: var(--ac);
+      color: var(--ac-light);
+      border-radius: 99px;
+      font-size: 11px;
+      font-weight: 700;
+      padding: 2px 8px;
+      display: none;
+    }
+    .badge.on { display: inline; }
+
+    /* ── HERO ── */
+    .hero {
+      background: var(--bg);
+      max-width: 900px;
+      margin: 0 auto;
+      padding: 4rem 1.5rem 3rem;
+      text-align: center;
+    }
+    .hero-pill {
+      display: inline-block;
+      background: var(--ac-light);
+      color: rgba(202, 21, 66, 0.555);
+      font-size: 12px;
+      font-weight: 600;
+      padding: 5px 16px;
+      border-radius: 99px;
+      margin-bottom: 1.25rem;
+      letter-spacing: 0.3px;
+    }
+    .hero h1 {
+      font-size: 42px;
+      font-weight: 700;
+      letter-spacing: -1.5px;
+      line-height: 1.15;
+      margin-bottom: 1rem;
+      color: var(--text);
+    }
+    .hero p {
+      font-size: 16px;
+      color: var(--text-2);
+      max-width: 420px;
+      margin: 0 auto 2rem;
+      line-height: 1.6;
+    }
+    /* ── HERO CTA opcional ── */
+    .hero-cta {
+      display: inline-block;
+      background: var(--ac);
+      color: var(--ac-light);
+      padding: 12px 28px;
+      border-radius: var(--radius-sm);
+      font-weight: 600;
+      font-size: 15px;
+      text-decoration: none;
+      cursor: pointer;
+      border: none;
+      transition: background 0.15s;
+    }
+    .hero-cta:hover { background: var(--ac-mid); }
+
+    /* ── PRODUTOS ── */
+    .section {
+      background: var(--bg);
+      max-width: 900px;
+      margin: 0 auto;
+      padding: 0 1.5rem 3rem;
+    }
+    .section-label {
+      font-size: 11px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      color: var(--text-2);
+      margin-bottom: 1rem;
+    }
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+      gap: 14px;
+    }
+    .card {
+      background: var(--bg-2);
+      border: 0.5px solid var(--border);
+      border-radius: var(--radius);
+      padding: 1.25rem;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      transition: border-color 0.15s, transform 0.15s;
+    }
+    .card:hover {
+      border-color: var(--border-2);
+      transform: translateY(-2px);
+    }
+    .card-icon {
+      width: 52px;
+      height: 52px;
+      border-radius: var(--radius-sm);
+      background: var(--ac-light);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 26px;
+      margin-bottom: 4px;
+    }
+    .card-name { font-size: 15px; font-weight: 600; }
+    .card-desc {
+      font-size: 13px;
+      color: var(--text-2);
+      flex: 1;
+      line-height: 1.55;
+    }
+    .card-footer {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-top: 8px;
+    }
+    .card-price {
+      font-size: 16px;
+      font-weight: 700;
+      color: var(--ac-mid);
+    }
+    .add-btn {
+      background: var(--ac);
+      color: var(--ac-light);
+      border: none;
+      border-radius: var(--radius-sm);
+      padding: 8px 14px;
+      font-size: 13px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: background 0.15s;
+    }
+    .add-btn:hover { background: var(--ac-mid); }
+    .add-btn:active { transform: scale(0.97); }
+
+    /* ── CARRINHO ── */
+    .cart-wrap {
+      max-width: 900px;
+      margin: 0 auto;
+      padding: 0 1.5rem 3rem;
+    }
+    .cart-panel {
+      background: var(--bg);
+      border: 0.5px solid var(--border);
+      border-radius: var(--radius);
+      padding: 1.5rem;
+      display: none;
+    }
+    .cart-panel.open { display: block; }
+    .cart-title {
+      font-size: 16px;
+      font-weight: 600;
+      margin-bottom: 1.25rem;
+    }
+    .empty { font-size: 14px; color: var(--text-2); }
+    .ci {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 12px 0;
+      border-bottom: 0.5px solid var(--border);
+      font-size: 14px;
+    }
+    .ci-name { flex: 1; font-weight: 500; }
+    .ci-qty { display: flex; align-items: center; gap: 10px; }
+    .qbtn {
+      width: 26px;
+      height: 26px;
+      border-radius: 50%;
+      border: 1px solid var(--border-2);
+      background: var(--bg-2);
+      cursor: pointer;
+      font-size: 14px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 600;
+    }
+    .qbtn:hover { background: var(--ac-light); border-color: var(--ac); }
+    .ci-total {
+      min-width: 70px;
+      text-align: right;
+      font-weight: 700;
+      color: var(--ac-mid);
+    }
+    .total-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 1.25rem 0 0;
+      font-size: 16px;
+      font-weight: 600;
+    }
+    .total-val { color: var(--ac-mid); font-size: 20px; font-weight: 700; }
+    .order-btn {
+      width: 100%;
+      margin-top: 1.25rem;
+      background: var(--ac);
+      color: var(--ac-light);
+      border: none;
+      border-radius: var(--radius-sm);
+      padding: 14px;
+      font-size: 15px;
+      font-weight: 700;
+      cursor: pointer;
+      transition: background 0.15s;
+      letter-spacing: 0.2px;
+    }
+    .order-btn:hover { background: var(--ac-mid); }
+
+    /* ── TOAST ── */
+    .toast {
+      position: fixed;
+      bottom: 24px;
+      right: 24px;
+      background: var(--text);
+      color: var(--bg);
+      border-radius: var(--radius-sm);
+      padding: 12px 20px;
+      font-size: 14px;
+      font-weight: 500;
+      opacity: 0;
+      transform: translateY(8px);
+      transition: opacity 0.2s, transform 0.2s;
+      pointer-events: none;
+      z-index: 999;
+    }
+    .toast.show { opacity: 1; transform: translateY(0); }
+
+    /* ── FOOTER ── */
+    footer {
+      background: var(--bg);
+      border-top: 0.5px solid var(--border);
+      text-align: center;
+      padding: 2rem 1.5rem;
+    }
+    footer p { font-size: 13px; color: var(--text-2); margin: 0.25rem 0; }
+    footer a { color: var(--ac); text-decoration: none; font-weight: 500; }
+
+    /* ── RESPONSIVO ── */
+    @media(max-width: 600px) {
+      .hero h1 { font-size: 30px; }
+      .grid { grid-template-columns: 1fr 1fr; }
+    }
+    @media(max-width: 420px) {
+      .grid { grid-template-columns: 1fr; }
+    }
+
+    /* ── SOBRE ── */
+     .sobre {
+     background: var(--bg);
+     padding: 3rem 0;
+     max-width: 900px;
+     margin: 0 auto;
+     
+    }
+     .sobre-inner {
+     max-width: 900px;
+     margin: 0 auto;
+     padding: 0 1.5rem;
+     display: flex;
+     align-items: center;
+     gap: 3rem;
+    
+    }
+     .sobre-texto {
+     flex: 1;
+    }
+     .sobre-texto h2 {
+     font-size: 28px;
+     font-weight: 700;
+     letter-spacing: -0.5px;
+     margin-bottom: 1.25rem;
+     color: #1a2a4a;
+    }
+     .sobre-texto p {
+     font-size: 15px;
+     color: var(--text-2);
+     line-height: 1.75;
+     margin-bottom: 1rem;
+    }
+     .mensagem {
+     font-style: italic;
+     color: rgba(172, 28, 3, 0.555) !important;
+     border-left: 3px solid var(--ac);
+     padding-left: 1rem;
+     margin-top: 1.5rem !important;
+    }
+     .sobre-foto {
+     width: 260px;
+     flex-shrink: 0;
+    }
+     .sobre-foto img {
+     width: 100%;
+     border-radius: 16px;
+     object-fit: cover;
+     aspect-ratio: 3/4;
+    }
+
+     /* responsivo — foto vai pra baixo do texto no celular */
+     @media(max-width: 650px) {
+     .sobre-inner {
+     flex-direction: column;
+    }
+     .sobre-foto {
+      width: 100%;
+    }
+}
+  </style>
+</head>
+<body>
+
+<!-- ════════════════════════════════
+     NAVEGAÇÃO
+     ════════════════════════════════ -->
+<nav>
+  <div class="nav-inner">
+    <!-- EDITE O NOME DA LOJA AQUI -->
+    <div class="logo">Bissa<span>Cookies</span></div>
+
+    <button class="cart-btn" onclick="toggleCart()">
+      Seu Forninho!
+      <span class="badge" id="badge">0</span>
+    </button>
+  </div>
+</nav>
+
+<!-- ════════════════════════════════
+     HERO
+     ════════════════════════════════ -->
+<section class="hero">
+  <!-- EDITE O TAG AQUI -->
+  <div class="hero-pill"> Feito com amor</div>
+
+  <!-- EDITE O TÍTULO AQUI -->
+  <h1>Cookies artesanais<br>pra adoçar seu dia</h1>
+
+  <!-- EDITE A DESCRIÇÃO AQUI -->
+  <p> 🍪 Sabor que abraça no primeiro pedaço.</p>
+
+  <button class="hero-cta" onclick="document.getElementById('produtos').scrollIntoView({behavior:'smooth'})">
+    Ver Cardápio!
+  </button>
+</section>
+
+<!-- ════════════════════════════════
+     SOBRE NÓS
+     ════════════════════════════════ -->
+<section class="sobre">
+  <div class="sobre-inner">
+
+    <div class="sobre-texto">
+      <!-- EDITE O TÍTULO -->
+      <h2>Quem sou eu?</h2>
+
+      <!--  ESCREVA A BIOGRAFIA AQUI -->
+      <p>
+         Por trás do BissaCookies estou eu, uma jovem de 17 anos, estudante, sonhadora e determinada. 
+        Entre a rotina estudantil e os desafios do dia a dia,
+        encontrei na confeitaria uma forma de criar, me expressar e dar vida a um sonho que cresce a cada dia.
+        Sempre fui ambiciosa e acredito muito no poder de começar, mesmo sem ter tudo perfeito.
+        O BissaCookies é exatamente isso: um sonho que saiu do papel, construído com dedicação, paciência e muito amor pelo que faço.
+      </p>
+      <p>
+         Hoje, mais do que vender doces, o BissaCookies representa a minha história, minha evolução e tudo aquilo que ainda quero conquistar.
+        Cada pedido carrega um pedacinho disso 
+        — cuidado, atenção e o desejo de tornar momentos mais especiais.
+      </p>
+      <p>
+         Cada cookie é feito à mão, com amor e carinho.
+        Aqui não tem linha de produção — tem dedicação de verdade.
+      </p>
+      <h2>Leve MAIS, pague MENOS!</h2>
+      <p>
+         Pra adoçar ainda mais, toda compra acima de R$ 25 ganha frete gratuito para entregas nas terças, quintas e sábados! Aproveite essa delícia sem sair de casa.
+      </p>
+      <!--  MENSAGEM AO CONSUMIDOR -->
+      <p class="mensagem">
+        "Obrigada por escolher a BissaCookies. Espero que cada cookie traga
+        um sorriso no seu rosto. Feito com amor, para você. 🍪"
+      </p>
+    </div>
+
+    <!--  COLOCAR A PICTURE DO AMORZIN -->
+    <div class="sobre-foto">
+      <img src="MinhaNamorada.png" alt="-Larissa Bissaco" />
+    </div>
+
+  </div>
+</section>
+
+<!-- ════════════════════════════════
+     PRODUTOS
+     Pra adicionar um novo cookie:
+     copie um bloco { ... } e cole
+     antes do colchete final ]
+     ════════════════════════════════ -->
+<section class="section" id="produtos">
+  <div class="section-label">Nossas delícias</div>
+  <div class="grid" id="grid"></div>
+</section>
+
+<!-- ════════════════════════════════
+     CARRINHO
+     ════════════════════════════════ -->
+<div class="cart-wrap">
+  <div class="cart-panel" id="cart-panel">
+    <div class="cart-title"> Meu Forninho!</div>
+    <div id="cart-items"></div>
+  </div>
+</div>
+
+<!-- ════════════════════════════════
+     FOOTER
+     EDITE O NÚMERO E INSTAGRAM
+     ════════════════════════════════ -->
+<footer>
+  <p><strong>BissaCookies</strong></p>
+  <p>Encomendas: <a href="https://wa.me/555599280403">WhatsApp</a></p>
+  <P></P> <p>Instagram: <a href="https://instagram.com/bissacookies">@bissacookies</a></p>
+  <p> Em Santa Maria, RS </p>
+  <p style="margin-top: 1rem; font-size: 12px;">© 2025 BissaCookies · Feito com amor</p>
+</footer>
+
+<!-- ════════════════════════════════
+     TOAST NOTIFICATION
+     ════════════════════════════════ -->
+<div class="toast" id="toast">Seu pedido está assando!</div>
+
+
+<script>
+  // ════════════════════════════════════════════
+  // LISTA DE PRODUTOS
+  // Para editar: mude name, desc e price
+  // Para adicionar: copie um bloco { } e cole
+  // Para remover: delete o bloco { } inteiro
+  // ════════════════════════════════════════════
+  const PRODUTOS = [
+    {
+      id: 1,
+      name: "10x Cookies Clássicos",
+      desc: "Baunilha, gotas de chocolate ao leite e pitada de sal.",
+      price: 11,
+      icon: "cookietrad.png"
+    },
+    {
+      id: 2,
+      name: "Cookie com Recheio de Avelã",
+      desc: "Crocante por fora, macio por dentro, com recheio cremoso de avelã.",
+      price: 8,
+      icon: "CookiedeNutella.png"
+    },
+    {
+      id: 3,
+      name: "Cookies Red Velvet",
+      desc: "Massa avermelhada, com gotas de chocolate branco",
+      price: 7,
+      icon: "redvelvet.png"
+    },
+    {
+      id: 4,
+      name: "Pão de Mel",
+      desc: "Recheio generoso de doce de leite, cobertura de chocolate meio amargo.",
+      price: 14,
+      icon: "paodemel.png"
+    },
+    {
+      id: 5,
+      name: "Alfajor",
+      desc: "Recheio de doce de leite, envolto em chocolate.",
+      price: 4,
+      icon: "Alfajor.png"
+    },
+    {
+      id: 6,
+      name: "Brownie Recheado de Nutella",
+      desc: "Textura densa e úmida, com intenso sabor de creme de avelã.",
+      price: 8,
+      icon: "brownienut.png"
+    },
+  ];
+
+  // ════════════════════════════════════════════
+  // NÚMERO DO WHATSAPP
+  // Coloque o número com código do país e DDD
+  // Exemplo: 5554999990000  (55 = Brasil)
+  // ════════════════════════════════════════════
+  const WHATSAPP = "555599280403"; //  TROQUE AQUI
+
+
+  // ════════════════════════════════════════════
+  // LÓGICA DO CARRINHO — não mexer aqui
+  // ════════════════════════════════════════════
+  const cart = {};
+
+  function renderGrid() {
+    document.getElementById("grid").innerHTML = PRODUTOS.map(p => `
+      <div class="card">
+        <div class="card-icon"><img src="${p.icon}" style="width:100%;height:100%;object-fit:cover;border-radius:8px;" /></div>
+        <div class="card-name">${p.name}</div>
+        <div class="card-desc">${p.desc}</div>
+        <div class="card-footer">
+          <span class="card-price">R$ ${p.price},00</span>
+          <button class="add-btn" onclick="add(${p.id})">+ Adicionar</button>
+        </div>
+      </div>
+    `).join("");
+  }
+
+  function add(id) {
+    cart[id] = (cart[id] || 0) + 1;
+    render();
+    flash();
+    document.getElementById("cart-panel").classList.add("open");
+  }
+
+  function chg(id, delta) {
+    cart[id] = (cart[id] || 0) + delta;
+    if (cart[id] <= 0) delete cart[id];
+    render();
+  }
+
+  function render() {
+    const count = Object.values(cart).reduce((s, v) => s + v, 0);
+    const total = Object.entries(cart).reduce((s, [id, q]) => {
+      return s + PRODUTOS.find(x => x.id == id).price * q;
+    }, 0);
+
+    const badge = document.getElementById("badge");
+    badge.textContent = count;
+    badge.classList.toggle("on", count > 0);
+
+    const el = document.getElementById("cart-items");
+    const entries = Object.entries(cart);
+
+    if (!entries.length) {
+      el.innerHTML = '<p class="empty">Seu forninho está vazio...</p>';
+      return;
+    }
+
+   // 👇 TROQUE esse bloco (a partir do .map até o fim da função render)
+  el.innerHTML = entries.map(([id, q]) => {
+  const p = PRODUTOS.find(x => x.id == id);
+  return `
+    <div class="ci">
+      <span class="ci-name">${p.name}</span>
+      <div class="ci-qty">
+        <button class="qbtn" onclick="chg(${id}, -1)">−</button>
+        <span>${q}</span>
+        <button class="qbtn" onclick="chg(${id}, 1)">+</button>
+      </div>
+      <span class="ci-total">R$ ${(p.price * q).toFixed(0)},00</span>
+    </div>
+  `;
+   })
+   .join("") + `
+  <div class="total-row" style="border-top: 0.5px solid var(--border); padding-top: 1rem; margin-top: 0.5rem;">
+    <span style="color: var(--text-2); font-size: 14px;">Subtotal</span>
+    <span>R$ ${total.toFixed(0)},00</span>
+  </div>
+
+  <div class="total-row" style="padding-top: 0.5rem;">
+    <span style="color: var(--text-2); font-size: 14px;">Frete</span>
+    <span style="color: ${total >= 25 ? '#27ae60' : 'var(--text)'}">
+      ${total >= 25 ? 'Grátis 🎉' : 'R$ 10,00'}
+    </span>
+  </div>
+
+  <div class="total-row" style="padding-top: 0.75rem; border-top: 0.5px solid var(--border); margin-top: 0.5rem;">
+    <span>Total</span>
+    <span class="total-val">R$ ${(total >= 25 ? total : total + 10).toFixed(0)},00</span>
+  </div>
+  
+  ${total < 25 ? `
+  <p style="font-size: 12px; color: var(--text-2); margin-top: 0.75rem; text-align: center;">
+    Falta R$ ${(25 - total).toFixed(0)},00 para frete grátis!
+  </p>` : ''}
+  <button class="order-btn" onclick="order()">
+    Pedir via WhatsApp 📲
+  </button>
+   `;
+  }
+
+  function order() {
+  const entries = Object.entries(cart);
+  if (!entries.length) return;
+
+  let subtotal = 0;
+  let linhas = "";
+
+  entries.forEach(([id, q]) => {
+    const p = PRODUTOS.find(x => x.id == id);
+    subtotal += p.price * q;
+    linhas += `- ${p.name} x${q} = R$ ${p.price * q},00%0A`;
+  });
+
+  const frete = subtotal >= 25 ? 0 : 10;
+  const totalFinal = subtotal + frete;
+  const freteTexto = frete === 0 ? "Grátis" : "R$ 10,00";
+
+  const msg = `Olá! Quero fazer um pedido:%0A%0A${linhas}%0AFrete: ${freteTexto}%0ATotal: R$ ${totalFinal},00`;
+
+  window.open(`https://wa.me/${WHATSAPP}?text=${msg}`, "_blank");
+  }
+
+  function toggleCart() {
+    document.getElementById("cart-panel").classList.toggle("open");
+  }
+
+  let toastTimer;
+  function flash() {
+    const t = document.getElementById("toast");
+    t.classList.add("show");
+    clearTimeout(toastTimer);
+    toastTimer = setTimeout(() => t.classList.remove("show"), 1800);
+  }
+
+  renderGrid();
+  render();
+</script>
+</body>
+</html>
